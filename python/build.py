@@ -6,6 +6,7 @@
 import sys
 import os
 import copy
+import json
 
 ALL_EXAM_FILE = u'../files/总题库文件(v150612).txt'
 A_INDEX = u'../files/A_试卷涉及题号(v150612).txt'
@@ -39,21 +40,21 @@ class line_processer:
         if self.is_index():
             temp = None
             if self.q == {}:
-                self.q = {"index": self.clean_head(self.line)}
+                self.q = {"index": self.clean_head(self.line), "answers": []}
                 return temp
             else:
                 temp = copy.deepcopy(self.q)
-                self.q = {"index": self.clean_head(self.line)}
+                self.q = {"index": self.clean_head(self.line), "answers": []}
             return temp
         elif self.is_empty():
             return None
         elif self.is_question():
             self.q["question"] = self.clean_head(self.line)
             return None
-        elif self.is_right_answer():
-            self.q["answers"]
+        elif self.is_answer():
+            self.q["answers"].append(self.clean_head(self.line))
         elif self.is_image_need():
-            self.q["image"] = self.
+            self.q["image"] = self.clean_head(self.line)
         else:
             return None
     def get_last(self):
@@ -66,10 +67,8 @@ class line_processer:
         return self.line.startswith("[I]")
     def is_question(self):
         return self.line.startswith("[Q]")
-    def is_right_answer(self):
-        return self.line.startswith("[A]")
-    def is_wrong_answer(self):
-        return self.line.startswith("[B]") or self.line.startswith("[C]") or self.line.startswith("[D]")
+    def is_answer(self):
+        return self.line.startswith("[A]") or self.line.startswith("[B]") or self.line.startswith("[C]") or self.line.startswith("[D]")
     def is_image_need(self):
         return self.line.startswith("[P]")
 
@@ -84,6 +83,7 @@ class builder:
         self.b_indexs = []
         self.c_indexs = []
         self.questions = []
+        self.indexs = {"a":[],"b":[],"c":[]}
 
         reload(sys)
         sys.setdefaultencoding('utf-8')
@@ -98,7 +98,7 @@ class builder:
         rst = []
         f = open(path, 'rb')
         for l in f.readlines():
-            rst.append(l.strip())
+            rst.append(l.strip().decode("GBK"))
         f.close()
         return rst
 
@@ -106,16 +106,20 @@ class builder:
         self.readFiles()
         self.process_questions()
         print len(self.raw_questions_lines)
-        self.a_indexs = self.process_indexs(self.raw_a_indexs[0])
-        print "A level: %d, %d" % (len(self.raw_a_indexs), len(self.a_indexs))
-        self.b_indexs = self.process_indexs(self.raw_b_indexs[0])
-        print "B level: %d, %d" % (len(self.raw_b_indexs), len(self.b_indexs))
-        self.c_indexs = self.process_indexs(self.raw_c_indexs[0])
-        print "C level: %d, %d" % (len(self.raw_c_indexs), len(self.c_indexs))
+        self.indexs["a"] = self.process_indexs(self.raw_a_indexs[0])
+        print "A level: %d, %d" % (len(self.raw_a_indexs), len(self.indexs["a"]))
+        self.indexs["b"] = self.process_indexs(self.raw_b_indexs[0])
+        print "B level: %d, %d" % (len(self.raw_b_indexs), len(self.indexs["b"]))
+        self.indexs["c"] = self.process_indexs(self.raw_c_indexs[0])
+        print "C level: %d, %d" % (len(self.raw_c_indexs), len(self.indexs["c"]))
+
+        self.write_to_file("db.json", json.dumps({"questions":self.questions,"indexs":self.indexs}))
 
     def process_indexs(self, idxs):
         rst = []
-        for _ in idxs.split(' '):
+        # sp = unicode('，' , errors='ignore')
+        sp = ' '
+        for _ in idxs.split(sp):
             # print _.strip()[0:6]
             rst.append(_.strip()[0:6])
         return rst
@@ -128,8 +132,13 @@ class builder:
             if rst != None:
                 self.questions.append(rst)
         self.questions.append(l.get_last())
-        print len(self.questions)
-        print self.questions[0]
+        # print len(self.questions)
+        # print self.questions[496]['answers'][2]
+
+    def write_to_file(self, path, content):
+        f = open(path, 'w')
+        f.write(content)
+        f.close()
 def main():
     b = builder()
     b.run()
