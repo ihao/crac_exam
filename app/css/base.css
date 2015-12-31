@@ -1,0 +1,98 @@
+body {
+  background: #eee;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 0;
+  padding: 30px 30px 10px;
+}
+
+a {
+  color: #4183c4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+code {
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-family: "Bitstream Vera Sans Mono", Consolas, Courier, monospace;
+  font-size: 12px;
+  margin: 0 2px;
+  padding: 0px 5px;
+}
+
+h1, h2, h3, h4 {
+  font-weight: bold;
+  margin: 0 0 15px;
+  padding: 0;
+}
+
+h1 {
+  border-bottom: 1px solid #aaa;
+  font-size: 2.5em;
+  font-weight: bold;
+  margin: 0 0 15px;
+  padding: 0;
+}
+
+h2 {
+  border-bottom: 1px solid #aaa;
+  font-size: 2em;
+}
+
+h3 {
+  font-size: 1.5em;
+}
+
+h4 {
+  font-size: 1.2em;
+}
+
+p, ul {
+  margin: 15px 0;
+}
+
+ul {
+  padding-left: 30px;
+}
+
+#app{
+  background:#ccc;
+  padding:20px;
+}
+
+.navs{
+  border-bottom: 1px solid #999;
+}
+.navs > ul{
+}
+.navs > ul > li{
+  list-style: none;
+  display: inline-block;
+  margin:0 5px;
+}
+.navs > ul > li > a{
+  display: inline-block;
+  padding: 5px 10px;
+  background: #bbb;
+}
+.navs > ul > li > a.active{
+  background: #baa;
+}
+
+.footer{
+  margin: 20px 0 0;
+  padding: 10px 20px;
+  border-top: 1px solid #aaa;
+}
+
+.home{
+  padding: 20px 30px;
+  font-size: 26px;
+  font-weight: bold;
+}
